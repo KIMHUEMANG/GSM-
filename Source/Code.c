@@ -1,11 +1,3 @@
-#include <windows.h>
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <time.h>
-
-int InputKey;
-
 //User의 Value
 long long gold = 11500;
 long long hp = 1000;
@@ -34,7 +26,6 @@ void goldLvup();
 
 //메인화면
 void mainscreen() {
-
 	gotoxy(1, 1);
 		printf("돈 : %lld 원  \n", gold);
 	gotoxy(1, 2);
@@ -71,6 +62,7 @@ void mainscreen() {
 
 int main() {
 	mainscreen();
+	int InputKey = "";
 	do {
 		InputKey = _getch();
 		if (InputKey == 'a') {
@@ -128,24 +120,28 @@ void shop() {
 	gotoxy(44, 10);
 	printf("----------------------");
 }
-//상점 기능
-void shopfeature() {
-	shop();
-	do {
-		//노동력키우기
-		InputKey = _getch();
-		if (InputKey == 'z' && gold > makegoldLvPrice) {
-				goldLvup();
-				shop();
-			}
-	} while (InputKey != 'q');
-		
-}
 //돈벌기 강화 소모비용 업데이트
 void goldLvup() {
 	makegold++;
 	makegoldLvPrice += makegoldLvPrice + makegoldLV * 30;
 	gold -= makegoldLvPrice;
+}
+
+//상점 기능
+void shopfeature() {
+	shop();
+	int inputkey = "";
+	do {
+		inputkey = _getch();
+		//노동력키우기
+		if (inputkey == 'z' && gold > makegoldLvPrice) {
+			gotoxy(46, 11);
+			printf("노동력 레벨업!");
+				goldLvup();
+				shop();
+			}
+	} while (inputkey != 'q');
+		
 }
 
 void gotoxy(int x, int y)
