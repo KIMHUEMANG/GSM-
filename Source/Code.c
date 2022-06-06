@@ -7,7 +7,7 @@
 
 
 //User의 Value
-long long gold = 11111500;
+long long gold = 1500;
 long long hp = 1000;
 long long pow = 100;
 int FirstGradePrice = 300;
