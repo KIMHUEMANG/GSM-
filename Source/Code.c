@@ -5,7 +5,7 @@
 #include <time.h>
 
 //User의 Value
-long long gold = 1503330;
+long long gold = 15033300000;
 long long hp = 1000;
 long long pow = 100;
 int FirstGradePrice = 300;
@@ -14,7 +14,7 @@ int makegoldLV = 1;
 long long makegoldLvPrice = 100;
 
 //학생수
-int FirstGrade = 0;
+int FirstGrade = 10;
 int First2Grade = 0;
 int SecondGrade = 0;
 int Second2Grade = 0;
@@ -24,10 +24,12 @@ int AllOfStudent = 0;
 int AllOfStudentState = 0;
 
 //기능반학생
+int gameStudent = 3, securityStudent = 3, itStudent = 3, random;
 
 //시설 장비
 int desktop = 0;
 int desktopATK = 1200;
+int desktopHP = 6000;
 int laptop = 0;
 int laptopATK = 15000;
 int airpod = 0;
@@ -47,14 +49,22 @@ void fusionSecond();
 void fusionSecond2();
 void SchoolFacility();
 void SchoolFacilityScreen();
+void featurescreen();
+void featurecom();
+void gamecom();
+void securitycom();
+void itcom();
+void LoadingCom();
 
 //메인화면
 void mainscreen() {
 	gotoxy(1, 1);
 		printf("돈 : %lld 원  \n", gold);
 	gotoxy(1, 2);
-		printf("돈벌기 (spacebar)");
-	gotoxy(1, 4);
+		printf("돈벌기 [spacebar]");
+	gotoxy(1, 3);
+		printf("((클릭당 버는 돈 %d 원))",makegold);
+	gotoxy(1, 5);
 		printf("입학받기[ - 300원 ] (a) or (s) ");
 	gotoxy(71, 1);
 		printf("총 학생 수 : %d ", AllOfStudent);
@@ -84,17 +94,17 @@ void mainscreen() {
 		printf("체력 : %lld ", hp);
 	gotoxy(37, 5);
 		printf("공격력 : %lld ", pow);
-	gotoxy(6, 6);
+	gotoxy(6, 7);
 		printf("□□□□학교 내부□□□□");
-	gotoxy(11, 14);
-		printf("ㅇ    ㅇ");
-	gotoxy(12, 10);
-		printf("  ㅇ   ㅇ ");
-		printf("ㅇ   ㅇㅇ");
-	gotoxy(13, 21);
-		printf("ㅇㅇ   ㅇ");
-		printf("   ㅇ");
-	gotoxy(6, 25);
+	gotoxy(11, 15);
+		printf("0    0");
+	gotoxy(12, 11);
+		printf(" 0   0 ");
+		printf("0   0 0");
+	gotoxy(13, 22);
+		printf("0 0   0");
+		printf("   0");
+	gotoxy(6, 26);
 		printf("□□□□□□□□□□□□");
 	gotoxy(70, 19);
 		printf("■■■■■■■■■■■■■■■■■■■");
@@ -162,6 +172,11 @@ int main() {
 		else if (InputKey == 'x') {
 			SchoolFacility();
 		}
+		else if (InputKey == 'o') {
+			featurecom();
+
+		}
+
 	} while (InputKey != 'q');
 }
 
@@ -170,10 +185,9 @@ void Admission() {
 	if (gold > FirstGradePrice) {
 		gold -= 300;
 		FirstGrade++;
-			gotoxy(rand() % 17 + 7, rand() % 17 + 7);
-			printf("ㅇ");
-			mainscreen();
-		
+		gotoxy(rand() % 17 + 7, rand() % 17 + 7);
+		printf("0");
+		mainscreen();	
 	}
 }
 
@@ -226,6 +240,12 @@ void goldLvup() {
 		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
 		gold -= makegoldLvPrice;
 	}
+	else if (makegoldLV > 100) {
+		makegold += 5;
+		makegoldLV++;
+		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
+		gold -= makegoldLvPrice;
+	}
 }
 //학교시설 장비 스크린
 void SchoolFacilityScreen() {
@@ -259,6 +279,8 @@ void SchoolFacility(){
 				gold -= 300000;
 				desktop++;
 				pow += desktopATK;
+				hp += desktopHP;
+
 				gotoxy(80, 26);
 				printf("구입이 완료되었습니다");
 				Sleep(500);
@@ -271,11 +293,51 @@ void SchoolFacility(){
 				SchoolFacility();
 			}
 		}
-		if (input == 0) {
+		else if (input == 2) {
+			if (gold >= 3000000) {
+				gold -= 3000000;
+				laptop += 1;
+				pow += laptopATK;
+				gotoxy(80, 26);
+				printf("구입이 완료되었습니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+			else if (gold < 3000000) {
+				gotoxy(80, 26);
+				printf("돈이 부족합니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+		}
+		else if (input == 3) {
+			if (gold >= 1500000) {
+				gold -= 1500000;
+				airpod += 1;
+				hp += airpotHP;
+				gotoxy(80, 26);
+				printf("구입이 완료되었습니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+			else if (gold < 1500000) {
+				gotoxy(80, 26);
+				printf("돈이 부족합니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+		}
+		else if (input == 0) {
 			system("cls");
 			shop();
 		}
+		else {
+			while (getchar() != '\n');
+			system("cls");
+			SchoolFacility();
+		}
 }
+
 //합치기
 void fusionFirst() {
 	if (FirstGrade > 1) {
@@ -303,6 +365,293 @@ void fusionSecond2() {
 		Second2Grade -= 2;
 		ThirdGrade++;
 	}
+}
+//기능대회
+void featurescreen() {
+	gotoxy(30, 0);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(30, 1);
+	printf("□                   기능대회                   □");
+	gotoxy(30, 2);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(0, 0);
+	printf("내 기능반 학생 수");
+	gotoxy(0, 1);
+	printf("▶ 게임 개발 : %d", gameStudent);
+	gotoxy(0, 2);
+	printf("▶ 사이버 보안 : %d", securityStudent);
+	gotoxy(0, 3);
+	printf("▶ IT 네트워크 : %d", itStudent);
+	gotoxy(20, 5);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(20, 6);
+	printf("□                                                                  □");
+	gotoxy(20, 7);
+	printf("□     게임 개발 대회 나가기( 1 )                                   □");
+	gotoxy(20, 8);
+	printf("□     (확률 : 1명 20%%, 2명 40%%, 3명 66%%)                           □");
+	gotoxy(20, 9);
+	printf("□                                                                  □");
+	gotoxy(20, 10);
+	printf("□     사이버 보안 대회 나가기 ( 2 )                                □");
+	gotoxy(20, 11);
+	printf("□     (확률 : 1명 25%% 2명 55%%, 3명 80%%)                            □");
+	gotoxy(20, 12);
+	printf("□                                                                  □");
+	gotoxy(20, 13);
+	printf("□     IT 네트워크(<--우웩) 대회 나가기 ( 3 )                       □");
+	gotoxy(20, 14);
+	printf("□     (확률 : 1명 33%%, 2명 66%%, 3명 99%%)                           □");
+	gotoxy(20, 15);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(20, 17);
+}
+
+void featurecom() {
+	system("cls");
+	featurescreen();
+	int input;
+	printf("나가실 대회를 입력하세요 ( 나가기 : 0  ): ");
+	scanf_s("%d", &input);
+	if (input == 0) {
+		system("cls");
+		main();
+		mainscreen();
+	}
+	else if (input == 1) {
+		gamecom();
+	}
+	else if (input == 2) {
+		securitycom();
+	}
+	else if (input == 3) {
+		itcom();
+	}
+	//type도 불가능ㄻㅇㄹ
+	else {
+		while (getchar() != '\n');
+		system("cls");
+		featurecom();
+	}
+}
+
+void gamecom() {
+	random = rand() % 100 + 1;
+	if (gameStudent  <  1) {
+		gotoxy(20, 18);
+		printf("인원이 부족합니다.");
+		Sleep(1000);
+		system("cls");
+		featurecom();
+	}
+	gotoxy(20, 18);
+	printf("                    ");
+	LoadingCom();
+	gotoxy(20, 18);
+	printf("                    ");
+	gotoxy(20, 18);
+	if (gameStudent == 1) {
+		if (random <= 20) {
+			printf("success !! 상금을 획득하였습니다. (1000만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 10000000;
+			gameStudent -= 1;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			gameStudent -= 1;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (gameStudent == 2) {
+		if (random <= 40) {
+			printf("success !! 상금을 획득하였습니다. (1000만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 10000000;
+			gameStudent -= 2;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			gameStudent -= 2;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (gameStudent == 3) {
+		if (random <= 66) {
+			printf("success !! 상금을 획득하였습니다. (1000만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 10000000;
+			gameStudent -= 3;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			gameStudent -= 3;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	featurescreen();
+}
+
+void securitycom() {
+	random = rand() % 100 + 1;
+	if (securityStudent < 1) {
+		gotoxy(20, 18);
+		printf("인원이 부족합니다.");
+		Sleep(1000);
+		system("cls");
+		featurecom();
+	}
+	gotoxy(20, 18);
+	printf("                    ");
+	LoadingCom();
+	gotoxy(20, 18);
+	printf("                    ");
+	gotoxy(20, 18);
+	if (securityStudent == 1) {
+		if (random <= 20) {
+			printf("success !! 상금을 획득하였습니다. (800만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 8000000;
+			securityStudent -= 1;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			securityStudent -= 1;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (securityStudent == 2) {
+		if (random <= 40) {
+			printf("success !! 상금을 획득하였습니다. (800만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 8000000;
+			securityStudent -= 2;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			securityStudent -= 2;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (securityStudent == 3) {
+		if (random <= 66) {
+			printf("success !! 상금을 획득하였습니다. (800만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 8000000;
+			securityStudent -= 3;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			securityStudent -= 3;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	featurescreen();
+}
+
+void itcom() {
+	random = rand() % 100 + 1;
+	if (itStudent < 1) {
+		gotoxy(20, 18);
+		printf("인원이 부족합니다.");
+		Sleep(1000);
+		system("cls");
+		featurecom();
+	}
+	gotoxy(20, 18);
+	printf("                    ");
+	LoadingCom();
+	gotoxy(20, 18);
+	printf("                    ");
+	gotoxy(20, 18);
+	if (itStudent == 1) {
+		if (random <= 20) {
+			printf("success !! 상금을 획득하였습니다. (600만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 6000000;
+			itStudent -= 1;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			itStudent -= 1;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (itStudent == 2) {
+		if (random <= 40) {
+			printf("success !! 상금을 획득하였습니다. (600만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 6000000;
+			itStudent -= 2;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			itStudent -= 2;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	else if (itStudent == 3) {
+		if (random <= 66) {
+			printf("success !! 상금을 획득하였습니다. (600만원) \n\n                    기능반 학생들이 채용됐습니다. 학교를 떠납니다");
+			gold += 6000000;
+			itStudent -= 3;
+			Sleep(2000);
+			system("cls");
+			featurecom();
+		}
+		else {
+			printf("fail .. 기능반 학생들이 자퇴했습니다.");
+			itStudent -= 3;
+			Sleep(1300);
+			system("cls");
+			featurecom();
+		}
+	}
+	featurescreen();
+}
+
+void LoadingCom() {
+	gotoxy(20, 18);
+	printf("기능 대회 진행중");
+
+	Sleep(1000);
+	printf(".");
+	Sleep(1000);
+	printf(".");
+	Sleep(1000);
+	printf(".");
 }
 
 void gotoxy(int x, int y)
