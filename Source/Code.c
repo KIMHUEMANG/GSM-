@@ -5,7 +5,7 @@
 #include <time.h>
 
 //User의 Value
-long long gold = 15033300000;
+long long gold = 1500;
 long long hp = 1000;
 long long pow = 100;
 int FirstGradePrice = 300;
@@ -18,7 +18,7 @@ int FirstGrade = 10;
 int First2Grade = 0;
 int SecondGrade = 0;
 int Second2Grade = 0;
-int ThirdGrade = 0;
+int ThirdGrade = 2;
 int AllOfStudent = 0;
 int AllOfStudentState = 0;
 
@@ -266,7 +266,7 @@ void SchoolFacilityScreen() {
 	gotoxy(40, 10);
 	printf("------------------------------학교 시설 물품------------------------------");
 	gotoxy(40, 12);
-	printf("1 쓸만한 중고 데스크탑 (30만원) : 공격력 : 1200 증가  // 현재 %d개 소유중",desktop);
+	printf("1 쓸만한 중고 데스크탑 (30만원) : 공격력 : 1200 증가 , 체력 6000증가  // 현재 %d개 소유중",desktop);
 	gotoxy(40, 14);
 	printf("2 최신형 노트북 (300만원) : 공격력 : 15000 증가  // 현재 %d개 소유중",laptop);
 	gotoxy(40, 16);
@@ -361,18 +361,25 @@ void becomeFeature() {
 	printf("무엇으로 전직 시킬것인가요 ?  나가기(0):");
 	scanf_s("%d", &input);
 	if (input == 1) {
-		if (gameStudent < 3) {
+		if (gameStudent < 3 && gold >= 100000) {
 			ThirdGrade--;
 			gameStudent++;
+			gold -= 100000;
 			gotoxy(44, 22);
 			printf("전직 성공 ! ");
 			Sleep(1000);
 			system("cls");
 			becomeFeature();
 		}
-		else {
+		else if(gameStudent > 3) {
 			gotoxy(44, 22);
 			printf("기능반 수가 다 찼습니다");
+			Sleep(1000);
+			becomeFeature();
+		}
+		else if (gold < 100000) {
+			gotoxy(44, 22);
+			printf("돈이 부족합니다.");
 			Sleep(1000);
 			becomeFeature();
 		}
