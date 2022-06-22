@@ -19,12 +19,12 @@ int First2Grade = 0;
 int SecondGrade = 0;
 int Second2Grade = 0;
 int ThirdGrade = 0;
-int FeatureGrade = 0;
 int AllOfStudent = 0;
 int AllOfStudentState = 0;
 
 //기능반학생
-int gameStudent = 3, securityStudent = 3, itStudent = 3, random;
+int gameStudent = 0, securityStudent = 0, itStudent = 0, random;
+int FeatureGrade = 0;
 
 //시설 장비
 int desktop = 0;
@@ -55,6 +55,8 @@ void gamecom();
 void securitycom();
 void itcom();
 void LoadingCom();
+void becomeFeature();
+void becomeFeatureScreen();
 
 //메인화면
 void mainscreen() {
@@ -176,6 +178,10 @@ int main() {
 			featurecom();
 
 		}
+		else if (InputKey == 'c') {
+			becomeFeature();
+		}
+		
 
 	} while (InputKey != 'q');
 }
@@ -203,16 +209,23 @@ void GoldScreenUpdate() {
 void StateUpdate() {
 	hp = 1000;
 	pow = 100;
-	AllOfStudent = FirstGrade + First2Grade + SecondGrade + Second2Grade + ThirdGrade + FeatureGrade;
+	AllOfStudent = FirstGrade + First2Grade + SecondGrade + Second2Grade + ThirdGrade + FeatureGrade + 1;
 	AllOfStudentState = FirstGrade + 4 * First2Grade + 16 * SecondGrade + 48 * Second2Grade + 108 * ThirdGrade + 108 * FeatureGrade;
 	hp += AllOfStudentState * 5;
 	pow += AllOfStudentState;
+	FeatureGrade = gameStudent + securityStudent + itStudent;
 }
 //상점 화면
 void shop() {
 	system("cls");
 	printf("내 돈 : %lld\n", gold);
-	printf("돈 벌기 레벨 : %d", makegoldLV);
+	printf("돈 벌기 레벨 : %d\n", makegoldLV);
+	printf("기능반 전직 가능 학생 : %d\n\n", ThirdGrade);
+	printf("---능력치---\n");
+	printf("체력 : %lld\n", hp);
+	printf("공격력 : %lld", pow);
+	
+
 	gotoxy(44, 3);
 	printf("---------------------------GSM SHOP---------------------------\n\n");
 	gotoxy(44, 4);
@@ -338,6 +351,58 @@ void SchoolFacility(){
 		}
 }
 
+//기능반 전직
+void becomeFeature() {
+	shop();
+	becomeFeatureScreen();
+	int input;
+
+	gotoxy(44, 20);
+	printf("무엇으로 전직 시킬것인가요 ?  나가기(0):");
+	scanf_s("%d", &input);
+	if (input == 1) {
+		if (gameStudent < 3) {
+			ThirdGrade--;
+			gameStudent++;
+			gotoxy(44, 22);
+			printf("전직 성공 ! ");
+			Sleep(1000);
+			system("cls");
+			becomeFeature();
+		}
+		else {
+			gotoxy(44, 22);
+			printf("기능반 수가 다 찼습니다");
+			Sleep(1000);
+			becomeFeature();
+		}
+	}
+	else if (input == 0) {
+		system("cls");
+		shop();
+	}
+
+	else {
+		while (getchar() != '\n');
+		system("cls");
+		becomeFeature();
+	}
+}
+
+
+void becomeFeatureScreen() {
+	gotoxy(40, 10);
+	printf("★☆★☆★☆기능반 전직★☆★☆★☆");
+	gotoxy(45, 12);
+	printf("게임개발 전직 (1)");
+	gotoxy(45, 14);
+	printf("사이버 보안 전직 (2)");
+	gotoxy(45, 16);
+	printf("IT 네트워크 전직 (3)");
+	gotoxy(40, 18);
+	printf("★☆★☆★☆★☆★☆★☆★☆★☆★☆");
+}
+
 //합치기
 void fusionFirst() {
 	if (FirstGrade > 1) {
@@ -427,7 +492,6 @@ void featurecom() {
 	else if (input == 3) {
 		itcom();
 	}
-	//type도 불가능ㄻㅇㄹ
 	else {
 		while (getchar() != '\n');
 		system("cls");
