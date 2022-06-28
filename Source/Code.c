@@ -5,26 +5,27 @@
 #include <time.h>
 
 //User의 Value
-long long gold = 1500;
-long long hp = 1000;
-long long pow = 100;
+long long gold = 15000000;
+long long hp = 10000000;
+long long pow = 10000;
 int FirstGradePrice = 300;
 int makegold = 1;
 int makegoldLV = 1;
 long long makegoldLvPrice = 100;
-
+int used = 0;
 //학생수
 int FirstGrade = 10;
 int First2Grade = 0;
 int SecondGrade = 0;
 int Second2Grade = 0;
-int ThirdGrade = 2;
+int ThirdGrade = 0;
 int AllOfStudent = 0;
 int AllOfStudentState = 0;
 
 //기능반학생
-int gameStudent = 0, securityStudent = 0, itStudent = 0, random;
+int gameStudent = 3, securityStudent = 3, itStudent = 3, random;
 int FeatureGrade = 0;
+
 
 //시설 장비
 int desktop = 0;
@@ -35,8 +36,28 @@ int laptopATK = 15000;
 int airpod = 0;
 int airpotHP = 80000;
 
+int mouse = 0;
+int lunch = 0;
+int soccer = 0;
+
+int mouseUsed = 0, lunchUsed = 0, soccerUsed = 0;
+
+//boss
+int Gclear = 0, Bclear = 0, Sclear = 0, Hclear = 0;
+//광주공고
+int Gatk = 500 , Ghp = 5000;
+//부 , 대 마이스터고
+int Batk = 10000 , Bhp = 100000;
+//서울대
+int Satk = 99999, Shp = 9999999;
+//하버드
+int Hatk = 55555555, Hhp = 444444444;
+
+
+
 
 //Feature Function
+void HideCursor();
 void gotoxy(int x, int y);
 void Admission();
 void GoldScreenUpdate();
@@ -57,8 +78,45 @@ void itcom();
 void LoadingCom();
 void becomeFeature();
 void becomeFeatureScreen();
+void bossScreen();
+void bossSelect();
+void boss();
+void Gboss();
+void BDboss();
+void bossAction();
+
+
 
 //메인화면
+void FuckingSchool() {
+	gotoxy(45, 14);
+	printf("■■■■■■■");
+	gotoxy(45, 15);
+	printf("■   G S M  ■");
+	gotoxy(45, 16);
+	printf("■          ■");
+	gotoxy(45, 17);
+	printf("■          ■");
+	gotoxy(37, 18);
+	printf("■■■■■          ■■■■■");
+	gotoxy(37, 19);
+	printf("■                          ■");
+	gotoxy(37, 20);
+	printf("■    □□   □□   □□    ■");
+	gotoxy(37, 21);
+	printf("■    □□   □□   □□    ■");
+	gotoxy(37, 22);
+	printf("■                          ■");
+	gotoxy(37, 23);
+	printf("■           ┌┬┐            ■");
+	gotoxy(37, 24);
+	printf("■           │││            ■");
+	gotoxy(37, 25);
+	printf("■           └┴┘            ■");
+	gotoxy(37, 26);
+	printf("■■■■■■■■■■■■■■■");
+}
+
 void mainscreen() {
 	gotoxy(1, 1);
 		printf("돈 : %lld 원  \n", gold);
@@ -108,23 +166,25 @@ void mainscreen() {
 		printf("   0");
 	gotoxy(6, 26);
 		printf("□□□□□□□□□□□□");
-	gotoxy(70, 19);
+	gotoxy(70, 20);
 		printf("■■■■■■■■■■■■■■■■■■■");
-		gotoxy(70, 20);
-		printf("■                                  ■");
 		gotoxy(70, 21);
-		printf("■ 1학년 합치기(G) L1학년 합치기(H) ■");
+		printf("■                                  ■");
 		gotoxy(70, 22);
-		printf("■                                  ■");
+		printf("■ 1학년 합치기(G) L1학년 합치기(H) ■");
 		gotoxy(70, 23);
-		printf("■ 2학년 합치기(J) L2학년 합치기(K) ■");
-		gotoxy(70, 24);
 		printf("■                                  ■");
+		gotoxy(70, 24);
+		printf("■ 2학년 합치기(J) L2학년 합치기(K) ■");
 		gotoxy(70, 25);
+		printf("■                                  ■");
+		gotoxy(70, 26);
 		printf("■■■■■■■■■■■■■■■■■■■");
-	
-		
+		FuckingSchool();
+
 }
+
+
 
 int main() {
 	mainscreen();
@@ -181,6 +241,9 @@ int main() {
 		else if (InputKey == 'c') {
 			becomeFeature();
 		}
+		else if (InputKey == 'p') {
+			bossSelect();
+		}
 		
 
 	} while (InputKey != 'q');
@@ -210,7 +273,7 @@ void StateUpdate() {
 	hp = 1000;
 	pow = 100;
 	AllOfStudent = FirstGrade + First2Grade + SecondGrade + Second2Grade + ThirdGrade + FeatureGrade + 1;
-	AllOfStudentState = FirstGrade + 4 * First2Grade + 16 * SecondGrade + 48 * Second2Grade + 108 * ThirdGrade + 108 * FeatureGrade;
+	AllOfStudentState = FirstGrade + 4 * First2Grade + 16 * SecondGrade + 48 * Second2Grade + 108 * ThirdGrade;
 	hp += AllOfStudentState * 5;
 	pow += AllOfStudentState;
 	FeatureGrade = gameStudent + securityStudent + itStudent;
@@ -371,15 +434,52 @@ void becomeFeature() {
 			system("cls");
 			becomeFeature();
 		}
-		else if(gameStudent > 3) {
+		else if(gameStudent >= 3 || ThirdGrade < 1) {
 			gotoxy(44, 22);
-			printf("기능반 수가 다 찼습니다");
+			printf("기능반 수가 다 찼거나 전직할 학생이 없습니다");
 			Sleep(1000);
 			becomeFeature();
 		}
 		else if (gold < 100000) {
 			gotoxy(44, 22);
 			printf("돈이 부족합니다.");
+			Sleep(1000);
+			becomeFeature();
+		}
+	}
+	if (input == 2) {
+		if (securityStudent < 3 && gold >= 100000) {
+			ThirdGrade--;
+			securityStudent++;
+			gold -= 100000;
+			gotoxy(44, 22);
+			printf("전직 성공 ! ");
+			Sleep(1000);
+			system("cls");
+			becomeFeature();
+		}
+		else if (securityStudent >= 3 || ThirdGrade < 0) {
+			gotoxy(44, 22);
+			printf("기능반 수가 다 찼거나 전직할 학생이 없습니다");
+			Sleep(1000);
+			becomeFeature();
+		}
+
+	}
+	if (input == 3) {
+		if (itStudent < 3 && gold >= 100000) {
+			ThirdGrade--;
+			itStudent++;
+			gold -= 100000;
+			gotoxy(44, 22);
+			printf("전직 성공 ! ");
+			Sleep(1000);
+			system("cls");
+			becomeFeature();
+		}
+		else if (itStudent > 2 || ThirdGrade < 0) {
+			gotoxy(44, 22);
+			printf("기능반 수가 다 찼거나 전직할 학생이 없습니다");
 			Sleep(1000);
 			becomeFeature();
 		}
@@ -725,8 +825,388 @@ void LoadingCom() {
 	printf(".");
 }
 
+void bossAction() {
+	gotoxy(97, 16);
+	printf("┌──────────┐");
+	gotoxy(97, 17);
+	printf("│          │");
+	gotoxy(97, 18);
+	printf("│ 광주공고 │");
+	gotoxy(97, 19);
+	printf("│          │");
+	gotoxy(97, 20);
+	printf("│          │");
+	gotoxy(97, 21);
+	printf("│          │");
+	gotoxy(97, 22);
+	printf("│          │");
+	gotoxy(97, 23);
+	printf("│          │");
+	gotoxy(97, 24);
+	printf("│          │");
+	gotoxy(97, 25);
+	printf("│          │");
+	gotoxy(97, 26);
+	printf("└──────────┘");
+
+
+	gotoxy(18, 14);
+	printf("■■■■■■■");
+	gotoxy(18, 15);
+	printf("■   G S M  ■");
+	gotoxy(18, 16);
+	printf("■          ■");
+	gotoxy(18, 17);
+	printf("■          ■");
+	gotoxy(10, 18);
+	printf("■■■■■          ■■■■■");
+	gotoxy(10, 19);
+	printf("■                          ■");
+	gotoxy(10, 20);
+	printf("■    □□   □□   □□    ■");
+	gotoxy(10, 21);
+	printf("■    □□   □□   □□    ■");
+	gotoxy(10, 22);
+	printf("■                          ■");
+	gotoxy(10, 23);
+	printf("■           ┌┬┐            ■");
+	gotoxy(10, 24);
+	printf("■           │││            ■");
+	gotoxy(10, 25);
+	printf("■           └┴┘            ■");
+	gotoxy(10, 26);
+	printf("■■■■■■■■■■■■■■■");
+}
+//보스전
+void Gboss() {
+	int savehp = hp;
+	int saveGhp = Ghp;
+
+	if (Gclear == 1) {
+		mainscreen();
+		return;
+	}
+
+	gotoxy(1, 1);
+	printf("GSM");
+	gotoxy(1, 2);
+	printf("체력 : %lld", hp);
+	gotoxy(1, 3);
+	printf("공격력: %lld", pow);
+
+	gotoxy(95, 1);
+	printf("광주공고");
+	gotoxy(95, 2);
+	printf("체력 : %d", Ghp);
+	gotoxy(95, 3);
+	printf("공격력: %d", Gatk);
+
+	bossAction();
+
+	gotoxy(50, 5);
+	printf("무엇을 하시겠습니까 ?\n");
+	gotoxy(50, 6);
+	printf("     1 공격하기\n");
+	gotoxy(50, 7);
+	printf("     2 아이템\n");
+
+
+	printf("                                                         ");
+	int input;
+	scanf_s("%d", &input);
+	//1 공격 2 아이템 
+	if (input == 1) {
+		printf("                                                       GSM의 공격..\n");
+		Sleep(1500);
+		Ghp -= pow;
+		printf("                                        %lld 만큼의 피해를 입혔다 - 상대체력 %d\n", pow, Ghp);
+		Sleep(1500);
+		if (Ghp <= 0) {
+			system("cls");
+			gotoxy(10, 10);
+			printf("승리하셨습니다 !");
+			hp = savehp;
+			Ghp = saveGhp;
+			Gclear = 1;
+			Sleep(2000);
+			system("cls");
+			mainscreen();
+			return;
+		}
+		printf("                                                     광주공고의 공격\n");
+		hp -= Gatk;
+		Sleep(1500);
+		printf("                                        %d만큼에 피해를 입었다. - 내 체력 %lld", Gatk, hp);
+		Sleep(1000);
+		if (hp <= 0) {
+			system("cls");
+			gotoxy(10, 10);
+			printf("죽었습니다.");
+			Sleep(2000);
+			system("cls");
+			mainscreen();
+		}
+		system("cls");
+		Gboss();
+	}
+	if (input == 2) {
+		used = 1;
+		system("cls");
+
+		gotoxy(80, 5);
+		printf("3. 오로지택 마우스 사용하기");
+		gotoxy(80, 6);
+		printf("4. 맛있는 급식 사용하기");
+		gotoxy(80, 7);
+		printf("5. GSM 축구 팀 사용하기");
+		printf("                                                                                                      ( 닫기 : 0 )");
+		Gboss();
+
+	}
+	//아이템사용 전투
+	if (used == 1 && input == 3) {
+		if (mouseUsed == 0) {
+			mouseUsed = 1;
+			printf("                                                GSM의 오로지택 마우스 공격!\n");
+			Sleep(1500);
+			Ghp -= pow * 2;
+			printf("                                        %lld 만큼의 피해를 입혔다 - 상대체력 %d\n", pow * 2, Ghp);
+			
+			Sleep(1500);
+			if (Ghp <= 0) {
+				system("cls");
+				gotoxy(10, 10);
+				printf("승리하셨습니다 !");
+				hp = savehp;
+				Ghp = saveGhp;
+				Gclear = 1;
+				Sleep(2000);
+				return;
+			}
+
+		printf("                                                     광주공고의 공격\n");
+		hp -= Gatk;
+		Sleep(1500);
+		printf("                                        %d만큼에 피해를 입었다. - 내 체력 %lld", Gatk, hp);
+		Sleep(1000);
+
+			if (hp <= 0) {
+				system("cls");
+				gotoxy(10, 10);
+				printf("죽었습니다.");
+				Sleep(2000);
+				system("cls");
+				mainscreen();
+			}
+			system("cls");
+			Gboss();
+		}
+		else {
+			printf("                                                     이미 사용했습니다.");
+			Sleep(1000);
+			system("cls");
+			Gboss();
+		}
+	}
+	if (used == 1 && input == 0) {
+		system("cls");
+		Gboss();
+	}
+	else {
+		while (getchar() != '\n');
+		system("cls");
+		Gboss();
+	}
+
+}
+
+void BDboss() {
+
+}
+
+void bossSelect() {
+	system("cls");
+	bossScreen();
+	int input;
+	
+	printf("\n\n                                             도전하실 보스를 선택하세요 : ");
+	scanf_s("%d", &input);
+
+	if (input == 1) {
+		system("cls");
+		Sleep(500);
+		printf("                                           광주공고  보스전 시작 ! ");
+		Sleep(2000);
+		system("cls");
+		Gboss();
+	}
+
+	else if (input == 0) {
+		system("cls");
+		mainscreen();
+	}
+
+	else {
+		while (getchar() != '\n');
+		system("cls");
+		bossSelect();
+	}
+}
+
+void bossScreen() {
+	gotoxy(30, 0);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(30, 1);
+	printf("□                   보스전                     □");
+	gotoxy(30, 2);
+	printf("□□□□□□□□□□□□□□□□□□□□□□□□□");
+	gotoxy(3, 15);
+	printf("┌──────────┐");
+	gotoxy(3, 16);
+	printf("│          │");
+	gotoxy(3, 17);
+	printf("│ 광주공고 │");
+	gotoxy(3, 18);
+	printf("│          │");
+	gotoxy(3, 19);
+	printf("│ 체력 :   │");
+	gotoxy(3, 20);
+	printf("│ 5000     │");
+	gotoxy(3, 21);
+	printf("│          │");
+	gotoxy(3, 22);
+	printf("│ 공격력 : │");
+	gotoxy(3, 23);
+	printf("│ 500      │");
+	gotoxy(3, 24);
+	printf("│      1   │");
+	gotoxy(3, 25);
+	printf("└──────────┘");
+
+	gotoxy(20, 12);
+	printf("□□□□□□□□□□□");
+	gotoxy(20, 13);
+	printf("□                  □");
+	gotoxy(20, 14);
+	printf("□ 대덕,부산 소마고 □");
+	gotoxy(20, 15);
+	printf("□                  □");
+	gotoxy(20, 16);
+	printf("□                  □");
+	gotoxy(20, 17);
+	printf("□   체력 : 100,000 □");
+	gotoxy(20, 18);
+	printf("□                  □");
+	gotoxy(20, 19);
+	printf("□                  □");
+	gotoxy(20, 20);
+	printf("□  공격력 : 10,000 □");
+	gotoxy(20, 21);
+	printf("□                  □");
+	gotoxy(20, 22);
+	printf("□          2       □");
+	gotoxy(20, 23);
+	printf("□                  □");
+	gotoxy(20, 24);
+	printf("□                  □");
+	gotoxy(20, 25);
+	printf("□□□□□□□□□□□");
+
+
+	gotoxy(45, 8);
+	printf("◈◈◈◈◈◈◈◈◈◈◈◈◈◈");
+	gotoxy(45, 9);
+	printf("◈                        ◈");
+	gotoxy(45, 10);
+	printf("◈                        ◈");
+	gotoxy(45, 11);
+	printf("◈       서울대학교       ◈");
+	gotoxy(45, 12);
+	printf("◈                        ◈");
+	gotoxy(45, 13);
+	printf("◈                        ◈");
+	gotoxy(45, 14);
+	printf("◈   체력 : 99,999,99     ◈");
+	gotoxy(45, 15);
+	printf("◈                        ◈");
+	gotoxy(45, 16);
+	printf("◈                        ◈");
+	gotoxy(45, 17);
+	printf("◈   공격력 : 9,999,99    ◈");
+	gotoxy(45, 18);
+	printf("◈                        ◈");
+	gotoxy(45, 19);
+	printf("◈                        ◈");
+	gotoxy(45, 20);
+	printf("◈              3         ◈");
+	gotoxy(45, 21);
+	printf("◈                        ◈");
+	gotoxy(45, 22);
+	printf("◈                        ◈");
+	gotoxy(45, 23);
+	printf("◈                        ◈");
+	gotoxy(45, 24);
+	printf("◈                        ◈");
+	gotoxy(45, 25);
+	printf("◈◈◈◈◈◈◈◈◈◈◈◈◈◈");
+
+	gotoxy(75, 5);
+	printf("★★★★★★★★★★★★★★★★★★★★");
+	gotoxy(75, 6);
+	printf("★☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆★");
+	gotoxy(75, 7);
+	printf("★☆            『최종전』          ☆★");
+	gotoxy(75, 8);
+	printf("★☆                                ☆★");
+	gotoxy(75, 9);
+	printf("★☆           하버드 대학교        ☆★");
+	gotoxy(75, 10);
+	printf("★☆                                ☆★");
+	gotoxy(75, 11);
+	printf("★☆                                ☆★");
+	gotoxy(75, 12);
+	printf("★☆   체력 :  444,444,444          ☆★");
+	gotoxy(75, 13);
+	printf("★☆                                ☆★");
+	gotoxy(75, 14);
+	printf("★☆                                ☆★");
+	gotoxy(75, 15);
+	printf("★☆   공격력 :  55,555,555         ☆★");
+	gotoxy(75, 16);
+	printf("★☆                                ☆★");
+	gotoxy(75, 17);
+	printf("★☆                                ☆★");
+	gotoxy(75, 18);
+	printf("★☆                                ☆★");
+	gotoxy(75, 19);
+	printf("★☆                                ☆★");
+	gotoxy(75, 20);
+	printf("★☆              4                 ☆★");
+	gotoxy(75, 21);
+	printf("★☆                                ☆★");
+	gotoxy(75, 22);
+	printf("★☆                                ☆★");
+	gotoxy(75, 23);
+	printf("★☆                                ☆★");
+	gotoxy(75, 24);
+	printf("★☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆★");
+	gotoxy(75, 25);
+	printf("★★★★★★★★★★★★★★★★★★★★");
+
+}
+
+
 void gotoxy(int x, int y)
 {
 	COORD pos = { x,y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+void HideCursor() //커서를 숨김
+{
+	CONSOLE_CURSOR_INFO cursor;
+	cursor.bVisible = FALSE;
+	cursor.dwSize = sizeof(cursor);
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorInfo(handle, &cursor);
 }
