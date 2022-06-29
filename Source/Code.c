@@ -13,6 +13,7 @@ int makegold = 1;
 int makegoldLV = 1;
 long long makegoldLvPrice = 100;
 int used = 0;
+int shopUsed = 0;
 //학생수
 int FirstGrade = 10;
 int First2Grade = 0;
@@ -149,11 +150,11 @@ void mainscreen() {
 	gotoxy(37, 1);
 		printf("--GSM--");
 	gotoxy(37, 3);
-		printf("돈벌기 레벨 : %d", makegoldLV);
+		printf("돈벌기 레벨 : %d ", makegoldLV);
 	gotoxy(37, 4);
-		printf("체력 : %lld ", hp);
+		printf("체력 :%lld  ", hp);
 	gotoxy(37, 5);
-		printf("공격력 : %lld ", pow);
+		printf("공격력 :%lld", pow);
 	gotoxy(6, 7);
 		printf("□□□□학교 내부□□□□");
 	gotoxy(11, 15);
@@ -199,17 +200,19 @@ int main() {
 			GoldScreenUpdate();
 		}
 		else if (InputKey == 'i') {
+			shopUsed = 1;
 			shop();
 		}
-		else if (InputKey == 'z') {
+		else if (InputKey == 'z' && shopUsed == 1) {
 			if (gold > makegoldLvPrice) {
 				goldLvup();
 				shop();
 			}
 		}
-		else if (InputKey == 'v') {
+		else if (InputKey == 'v' && shopUsed == 1) {
 			system("cls");
 			mainscreen();
+			shopUsed = 0;
 		}
 		else if (InputKey == 'g') {
 			fusionFirst();
@@ -231,14 +234,14 @@ int main() {
 			StateUpdate();
 			mainscreen();
 		}
-		else if (InputKey == 'x') {
+		else if (InputKey == 'x' && shopUsed == 1) {
 			SchoolFacility();
 		}
 		else if (InputKey == 'o') {
 			featurecom();
 
 		}
-		else if (InputKey == 'c') {
+		else if (InputKey == 'c' && shopUsed == 1) {
 			becomeFeature();
 		}
 		else if (InputKey == 'p') {
@@ -254,7 +257,7 @@ void Admission() {
 	if (gold > FirstGradePrice) {
 		gold -= 300;
 		FirstGrade++;
-		gotoxy(rand() % 17 + 7, rand() % 17 + 7);
+		gotoxy(rand() % 23 + 7, rand() % 19 + 7);
 		printf("0");
 		mainscreen();	
 	}
@@ -270,8 +273,6 @@ void GoldScreenUpdate() {
 
 //능력치
 void StateUpdate() {
-	hp = 1000;
-	pow = 100;
 	AllOfStudent = FirstGrade + First2Grade + SecondGrade + Second2Grade + ThirdGrade + FeatureGrade + 1;
 	AllOfStudentState = FirstGrade + 4 * First2Grade + 16 * SecondGrade + 48 * Second2Grade + 108 * ThirdGrade;
 	hp += AllOfStudentState * 5;
@@ -310,14 +311,26 @@ void goldLvup() {
 		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
 		gold -= makegoldLvPrice;
 	}
-	else if (makegoldLV > 50) {
+	else if (makegoldLV > 50 && makegoldLV < 100) {
 		makegold += 2;
 		makegoldLV++;
 		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
 		gold -= makegoldLvPrice;
 	}
-	else if (makegoldLV > 100) {
+	else if (makegoldLV >= 100 && makegold < 150) {
 		makegold += 5;
+		makegoldLV++;
+		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
+		gold -= makegoldLvPrice;
+	}
+	else if (makegoldLV >= 150 && makegold < 250) {
+		makegold += 10;
+		makegoldLV++;
+		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
+		gold -= makegoldLvPrice;
+	}
+	else {
+		makegold += 20;
 		makegoldLV++;
 		makegoldLvPrice = makegoldLvPrice + makegoldLV * 10;
 		gold -= makegoldLvPrice;
@@ -326,21 +339,21 @@ void goldLvup() {
 //학교시설 장비 스크린
 void SchoolFacilityScreen() {
 	shop();
-	gotoxy(40, 10);
+	gotoxy(30, 10);
 	printf("------------------------------학교 시설 물품------------------------------");
-	gotoxy(40, 12);
+	gotoxy(30, 12);
 	printf("1 쓸만한 중고 데스크탑 (30만원) : 공격력 : 1200 증가 , 체력 6000증가  // 현재 %d개 소유중",desktop);
-	gotoxy(40, 14);
+	gotoxy(30, 14);
 	printf("2 최신형 노트북 (300만원) : 공격력 : 15000 증가  // 현재 %d개 소유중",laptop);
-	gotoxy(40, 16);
+	gotoxy(30, 16);
 	printf("3 에어팍 프로 (150만원) : 체력 80000증가 //현재 %d개 소유중",airpod);
-	gotoxy(40, 18);
-	printf("4 오로지택 마우스 (2000만원) : 10퍼센트 확률로 스페셜 공격");
-	gotoxy(40, 20);
-	printf("5 맛있는 급식(5000만원) : 5퍼센트 확률로 체력 전부 회복");
-	gotoxy(40, 22);
-	printf("6 GSM 축구부(1억) : 30퍼센트 확률로 연속으로 공격한다.");
-	gotoxy(40, 24);
+	gotoxy(30, 18);
+	printf("4 오로지택 마우스 (2000만원) : 10퍼센트 확률로 스페셜 공격 // 현재 %d개 소유중",mouse);
+	gotoxy(30, 20);
+	printf("5 맛있는 급식(5000만원) : 5퍼센트 확률로 체력 전부 회복 // 현재 %d개 소유중",lunch);
+	gotoxy(30, 22);
+	printf("6 GSM 축구부(1억) : 30퍼센트 확률로 연속으로 공격한다. // 현재 %d개 소유중",soccer);
+	gotoxy(30, 24);
 	printf("----------------------------------------------------------------------------");
 }
 //학교 시설 장비
@@ -357,13 +370,13 @@ void SchoolFacility(){
 				pow += desktopATK;
 				hp += desktopHP;
 
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("구입이 완료되었습니다");
 				Sleep(500);
 				SchoolFacility();
 			}
 			else if (gold < 300000) {
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("돈이 부족합니다");
 				Sleep(500);
 				SchoolFacility();
@@ -374,13 +387,13 @@ void SchoolFacility(){
 				gold -= 3000000;
 				laptop += 1;
 				pow += laptopATK;
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("구입이 완료되었습니다");
 				Sleep(500);
 				SchoolFacility();
 			}
 			else if (gold < 3000000) {
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("돈이 부족합니다");
 				Sleep(500);
 				SchoolFacility();
@@ -391,18 +404,64 @@ void SchoolFacility(){
 				gold -= 1500000;
 				airpod += 1;
 				hp += airpotHP;
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("구입이 완료되었습니다");
 				Sleep(500);
 				SchoolFacility();
 			}
 			else if (gold < 1500000) {
-				gotoxy(80, 26);
+				gotoxy(73, 26);
 				printf("돈이 부족합니다");
 				Sleep(500);
 				SchoolFacility();
 			}
 		}
+		else if (input == 4) {
+			if (mouse < 1 && gold >= 20000000) {
+				mouse += 1;
+				gotoxy(73, 26);
+				printf("구입이 완료되었습니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+			else {
+				gotoxy(73, 26);
+				printf("돈이 부족하거나 이미 구입했습니다.");
+				Sleep(500);
+				SchoolFacility();
+			}
+		}
+		else if (input == 5) {
+			if (lunch < 1 && gold >= 50000000) {
+				lunch += 1;
+				gotoxy(73, 26);
+				printf("구입이 완료되었습니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+			else {
+				gotoxy(73, 26);
+				printf("돈이 부족하거나 이미 구입했습니다.");
+				Sleep(500);
+				SchoolFacility();
+			}
+		}
+		else if (input == 6) {
+			if (soccer < 1 && gold >= 100000000) {
+				soccer += 1;
+				gotoxy(73, 26);
+				printf("구입이 완료되었습니다");
+				Sleep(500);
+				SchoolFacility();
+			}
+			else {
+				gotoxy(73, 26);
+				printf("돈이 부족하거나 이미 구입했습니다.");
+				Sleep(500);
+				SchoolFacility();
+			}
+		}
+
 		else if (input == 0) {
 			system("cls");
 			shop();
